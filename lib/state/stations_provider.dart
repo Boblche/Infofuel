@@ -60,7 +60,12 @@ class StationsProvider extends ChangeNotifier {
   Future<void> refresh() => _load(forceRefresh: true);
 
   Future<void> _load({required bool forceRefresh}) async {
-    status = StationsStatus.loading;
+    // A refresh of already-loaded data shouldn't blank the list behind a
+    // full-screen spinner — the RefreshIndicator's own spinner is enough
+    // feedback, and the current stations stay visible while the (slow,
+    // nationwide) dataset re-downloads in the background.
+    final hasData = _allStations.isNotEmpty;
+    if (!hasData) status = StationsStatus.loading;
     errorMessage = null;
     notifyListeners();
 
@@ -74,7 +79,7 @@ class StationsProvider extends ChangeNotifier {
       status = StationsStatus.loaded;
     } catch (e) {
       errorMessage = e.toString();
-      status = StationsStatus.error;
+      if (!hasData) status = StationsStatus.error;
     }
     notifyListeners();
   }

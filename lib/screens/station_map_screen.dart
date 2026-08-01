@@ -135,7 +135,16 @@ class _StationMapScreenState extends State<StationMapScreen> {
       children: [
         FlutterMap(
           mapController: _mapController,
-          options: MapOptions(initialCenter: center, initialZoom: 14),
+          options: MapOptions(
+            initialCenter: center,
+            initialZoom: 14,
+            // Rotating the map would rotate the price/text markers with it
+            // (upside down at 180°), so the twist gesture is disabled —
+            // pan/zoom stay available.
+            interactionOptions: const InteractionOptions(
+              flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
+            ),
+          ),
           children: [
             TileLayer(
               urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
