@@ -12,6 +12,8 @@ class StationCard extends StatelessWidget {
     required this.onTap,
     required this.onToggleFavorite,
     this.highlightedFuel,
+    this.title,
+    this.onRename,
   });
 
   final Station station;
@@ -19,6 +21,13 @@ class StationCard extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback onToggleFavorite;
   final FuelType? highlightedFuel;
+
+  /// Overrides the address/city shown as the title, e.g. a favorite's
+  /// custom nickname.
+  final String? title;
+
+  /// Shown as a small edit button next to the title when set.
+  final VoidCallback? onRename;
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +52,10 @@ class StationCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          station.adresse.isEmpty
-                              ? station.ville
-                              : station.adresse,
+                          title ??
+                              (station.adresse.isEmpty
+                                  ? station.ville
+                                  : station.adresse),
                           style: Theme.of(context)
                               .textTheme
                               .titleMedium
@@ -64,6 +74,12 @@ class StationCard extends StatelessWidget {
                     ),
                   ),
                   if (station.distanceMeters != null) _DistancePill(station: station),
+                  if (onRename != null)
+                    IconButton(
+                      icon: Icon(Icons.edit_outlined, color: scheme.onSurfaceVariant),
+                      tooltip: 'Renommer',
+                      onPressed: onRename,
+                    ),
                   IconButton(
                     icon: Icon(
                       isFavorite ? Icons.favorite : Icons.favorite_border,

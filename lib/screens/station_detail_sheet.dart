@@ -33,6 +33,7 @@ class StationDetailSheet extends StatelessWidget {
     final cheapestFuel = station.cheapestFuel;
     final favorites = context.watch<FavoritesProvider>();
     final isFavorite = favorites.isFavorite(station.id);
+    final customName = favorites.customNameFor(station.id);
 
     return SafeArea(
       child: Padding(
@@ -60,12 +61,20 @@ class StationDetailSheet extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        station.adresse.isEmpty ? station.ville : station.adresse,
+                        customName ??
+                            (station.adresse.isEmpty ? station.ville : station.adresse),
                         style: Theme.of(context)
                             .textTheme
                             .titleLarge
                             ?.copyWith(fontWeight: FontWeight.w800),
                       ),
+                      if (customName != null) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          station.adresse.isEmpty ? station.ville : station.adresse,
+                          style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 13),
+                        ),
+                      ],
                       const SizedBox(height: 4),
                       Row(
                         children: [
