@@ -46,3 +46,8 @@ app.*.map.json
 
 # Other
 .claude
+
+# Built app packages — distributed via GitHub Releases instead of git
+*.apk
+*.aab
+*.ipa
